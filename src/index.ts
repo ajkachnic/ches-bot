@@ -6,6 +6,7 @@ import { ChallengeHandler } from './handlers/challenge';
 import { MemoryStore } from './store/memory';
 import { MoveHandler } from './handlers/move';
 import { AbandonHandler } from './handlers/abandon';
+import { HelpHandler } from './handlers/help';
 
 const client = new Client();
 
@@ -13,7 +14,8 @@ const store = new MemoryStore();
 const handlers = [
   ChallengeHandler,
   MoveHandler,
-  AbandonHandler
+  AbandonHandler,
+  HelpHandler
 ]
 
 const allHandlers = async (f: (h: BaseHandler) => Promise<boolean>, fName: string) => {
