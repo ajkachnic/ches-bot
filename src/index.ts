@@ -20,7 +20,7 @@ const handlers = [
 
 const allHandlers = async (f: (h: BaseHandler) => Promise<boolean>, fName: string) => {
   for (const Handler of handlers) {
-    const handler = new Handler(store)
+    const handler = new Handler(client, store)
     try {
       const res = await f(handler)
       if (res) break

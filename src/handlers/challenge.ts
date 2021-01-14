@@ -23,10 +23,11 @@ export class ChallengeHandler extends BaseHandler {
       const game: Game = {
         fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         participants: [
-          challengee,
-          challenger
+          challengee.id,
+          challenger.id
         ],
-        id: nanoid(32)
+        id: nanoid(32),
+        lastMessage: ''
       }
 
       this.store.newGame(game, {

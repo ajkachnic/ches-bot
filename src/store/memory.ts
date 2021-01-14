@@ -25,8 +25,10 @@ export class MemoryStore extends BaseStore {
   findGame(info: GameInfo): Game | undefined {
     if(info.guild.id in this.games) {
       for(const game of Object.values(this.games[info.guild.id])) {
-        if(game?.participants.includes(info.user)) {
+        if(game?.participants.includes(info.user.id)) {
           return game
+        } else {
+          console.log('User not in games')
         }
       }
     }
@@ -36,8 +38,9 @@ export class MemoryStore extends BaseStore {
     return this.games[guild][id]
   }
 
-  updateGame(updated: Game, guild: string) {
+  updateGame(updated: Game, guild: string): Game {
     this.games[guild][updated.id] = updated
+    return updated
   }
   removeGame(info: GameInfo) {
     const game = this.findGame(info)

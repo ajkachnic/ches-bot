@@ -2,8 +2,9 @@ import { Collection, User } from "discord.js";
 
 export interface Game {
   fen: string,
-  participants: User[],
-  id: string
+  participants: string[],
+  id: string,
+  lastMessage: string
 }
 
 export interface ExtraData {

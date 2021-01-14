@@ -76,7 +76,10 @@ export class SvgRenderer {
   }
 
 
-  board(fen: string, size: number): string {
+  board(fen: string, { size = 400, orientation = 'w' }: {
+    size?: number
+    orientation?: 'b' | 'w'
+  }): string {
     const chess = Chess(fen)
     const board = chess.board()
     const svg = this.svg(0, size)
@@ -95,8 +98,8 @@ export class SvgRenderer {
     let dark = false
     board.forEach((row, rankIndex) => {
       row.forEach((piece, fileIndex) => {
-        const x = fileIndex * SQUARE_SIZE
-        const y = rankIndex * SQUARE_SIZE
+        const x = (orientation === 'w' ? fileIndex : 7 - fileIndex) * SQUARE_SIZE 
+        const y = (orientation === 'w' ? 7 - rankIndex : rankIndex) * SQUARE_SIZE
         
         const cls = ["square", dark ? 'dark' : 'light']
         // piece && cls.push(piece.type)
