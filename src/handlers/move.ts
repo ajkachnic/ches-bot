@@ -56,7 +56,6 @@ Run \`${prefix}challenge @user\` to create one`)
       }, (message.guild as Guild).id)    
       const renderer = new SvgRenderer()
       const rendered = renderer.board(fen, 400)
-      console.log(rendered)
       const file: Buffer = await new Promise((resolve, reject) => {
         svg2img(rendered, {
           width: 400,

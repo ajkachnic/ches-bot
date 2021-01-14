@@ -102,7 +102,6 @@ export class SvgRenderer {
         // piece && cls.push(piece.type)
         // @ts-ignore
         const fillColor = DEFAULT_COLORS[cls.join(' ')] as string
-        if(fillColor == undefined) console.log(cls)
         svg.ele("rect", {
           x,
           y,

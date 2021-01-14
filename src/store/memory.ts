@@ -20,7 +20,6 @@ export class MemoryStore extends BaseStore {
       this.games[info.guild.id] = {}
       this.games[info.guild.id][game.id] = game
     }
-    console.log(this.games)
   }
 
   findGame(info: GameInfo): Game | undefined {
