@@ -66,6 +66,11 @@ Run \`${prefix}challenge @user\` to create one`)
         })
       })
       const attachment = new MessageAttachment(file, 'board.jpg')
+      try {
+        await message.delete()
+      } catch {
+        console.log(`Couldn't remove a message`)
+      }
       await message.channel.send(`Here's the board`, attachment)
       return true
     } else {
