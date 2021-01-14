@@ -1,22 +1,23 @@
-import { Guild, Message, User } from "discord.js";
-import { nanoid } from "nanoid";
-import { prefix } from "../config";
-import type { ExtraData, Game } from "../types";
-import { BaseHandler } from "./base";
+import {Guild, Message, User} from 'discord.js'
+import {nanoid} from 'nanoid'
+import {prefix} from '../config'
+import type {ExtraData, Game} from '../types'
+import {BaseHandler} from './base'
 
 export class ChallengeHandler extends BaseHandler {
-  _name = "challenge handler"
-  async onMessage(message: Message, { normalized, mentions }: ExtraData) {
-    if(normalized.startsWith(`${prefix}challenge`)) {
-      const challengee = mentions.first() as User
-      if(challengee === undefined) {
-        message.channel.send('You need to mention a user')
+  _name = 'challenge handler'
+  async onMessage(message: Message, {normalized, mentions}: ExtraData) {
+    if (normalized.startsWith(`${prefix}challenge`)) {
+      const challengee = mentions.first()!
+      if (challengee === undefined) {
+        await message.channel.send('You need to mention a user')
         return true
       }
+
       const challenger = message.author
 
-      if(challengee.bot) {
-        message.channel.send('You can\'t play against a bot')
+      if (challengee.bot) {
+        await message.channel.send('You can\'t play against a bot')
         return true
       }
 
@@ -31,15 +32,15 @@ export class ChallengeHandler extends BaseHandler {
       }
 
       this.store.newGame(game, {
-        guild: message.guild as Guild,
+        guild: message.guild!,
         user: challenger
       })
 
-      message.channel.send('Game successfully created! You can move with `chess move <move>`')
+      await message.channel.send('Game successfully created! You can move with `chess move <move>`')
 
       return true
-    } else {
-      return false
     }
+
+    return false
   }
 }

@@ -1,1 +1,1 @@
-export const prefix = `chess `
+export const prefix = 'chess '

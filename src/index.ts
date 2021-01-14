@@ -1,16 +1,16 @@
 import dotenv from 'dotenv'
 dotenv.config()
-import { Client, User } from 'discord.js'
-import { BaseHandler } from './handlers/base';
-import { ChallengeHandler } from './handlers/challenge';
-import { MemoryStore } from './store/memory';
-import { MoveHandler } from './handlers/move';
-import { AbandonHandler } from './handlers/abandon';
-import { HelpHandler } from './handlers/help';
+import {Client, User} from 'discord.js'
+import {BaseHandler} from './handlers/base'
+import {ChallengeHandler} from './handlers/challenge'
+import {MemoryStore} from './store/memory'
+import {MoveHandler} from './handlers/move'
+import {AbandonHandler} from './handlers/abandon'
+import {HelpHandler} from './handlers/help'
 
-const client = new Client();
+const client = new Client()
 
-const store = new MemoryStore();
+const store = new MemoryStore()
 const handlers = [
   ChallengeHandler,
   MoveHandler,
@@ -22,9 +22,11 @@ const allHandlers = async (f: (h: BaseHandler) => Promise<boolean>, fName: strin
   for (const Handler of handlers) {
     const handler = new Handler(client, store)
     try {
-      const res = await f(handler)
-      if (res) break
-    } catch (error) {
+      const result = await f(handler)
+      if (result) {
+        break
+      }
+    } catch (error: unknown) {
       console.log(`> ${handler._name} errored in ${fName}!`)
       console.log(error)
     }
@@ -32,14 +34,14 @@ const allHandlers = async (f: (h: BaseHandler) => Promise<boolean>, fName: strin
 }
 
 client.once('ready', () => {
-  console.log(`I'm ready...`)
+  console.log('I\'m ready...')
 })
 
 client.on('message', async message => {
   const normalized = message.content.toLowerCase()
   const mentions = message.mentions.users
 
-  await allHandlers(async (handler) => await handler.onMessage(message, { normalized, mentions }), 'onMessage')
+  await allHandlers(async handler => handler.onMessage(message, {normalized, mentions}), 'onMessage')
 })
 
-client.login(process.env.BOT_TOKEN)
+void client.login(process.env.BOT_TOKEN)

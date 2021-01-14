@@ -1,5 +1,5 @@
-import { Game } from "../types";
-import { BaseStore, GameInfo } from "./base";
+import {Game} from '../types'
+import {BaseStore, GameInfo} from './base'
 
 /*
 {
@@ -14,7 +14,7 @@ export class MemoryStore extends BaseStore {
   games: Games = {}
   newGame(game: Game, info: GameInfo) {
     const games = this.games[info.guild.id]
-    if(games) {
+    if (games) {
       games[game.id] = game
     } else {
       this.games[info.guild.id] = {}
@@ -23,17 +23,19 @@ export class MemoryStore extends BaseStore {
   }
 
   findGame(info: GameInfo): Game | undefined {
-    if(info.guild.id in this.games) {
-      for(const game of Object.values(this.games[info.guild.id])) {
-        if(game?.participants.includes(info.user.id)) {
+    if (info.guild.id in this.games) {
+      for (const game of Object.values(this.games[info.guild.id])) {
+        if (game?.participants.includes(info.user.id)) {
           return game
-        } else {
-          console.log('User not in games')
         }
+
+        console.log('User not in games')
       }
     }
+
     return undefined
   }
+
   getGame(id: string, guild: string): Game | undefined {
     return this.games[guild][id]
   }
@@ -42,9 +44,10 @@ export class MemoryStore extends BaseStore {
     this.games[guild][updated.id] = updated
     return updated
   }
+
   removeGame(info: GameInfo) {
     const game = this.findGame(info)
-    if(game !== undefined) {
+    if (game !== undefined) {
       this.games[info.guild.id][game.id || ''] = undefined
     }
   }
