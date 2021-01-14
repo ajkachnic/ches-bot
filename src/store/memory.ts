@@ -25,7 +25,7 @@ export class MemoryStore extends BaseStore {
   findGame(info: GameInfo): Game | undefined {
     if (info.guild.id in this.games) {
       for (const game of Object.values(this.games[info.guild.id])) {
-        if (game?.participants.includes(info.user.id)) {
+        if ([game?.white, game?.black].includes(info.user.id)) {
           return game
         }
 

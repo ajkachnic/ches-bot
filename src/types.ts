@@ -2,7 +2,9 @@ import {Collection, User} from 'discord.js'
 
 export interface Game {
   fen: string;
-  participants: string[];
+  black: string;
+  white: string;
+  turn: 'w' | 'b';
   id: string;
   lastMessage: string;
 }

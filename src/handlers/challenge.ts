@@ -23,10 +23,9 @@ export class ChallengeHandler extends BaseHandler {
 
       const game: Game = {
         fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-        participants: [
-          challengee.id,
-          challenger.id
-        ],
+        white: challenger.id,
+        black: challengee.id,
+        turn: 'w',
         id: nanoid(32),
         lastMessage: ''
       }
