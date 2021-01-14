@@ -99,10 +99,9 @@ export class SvgRenderer {
     board.forEach((row, rankIndex) => {
       row.forEach((piece, fileIndex) => {
         const x = (orientation === 'w' ? fileIndex : 7 - fileIndex) * SQUARE_SIZE 
-        const y = (orientation === 'w' ? 7 - rankIndex : rankIndex) * SQUARE_SIZE
+        const y = (orientation === 'w' ? rankIndex : 7 - rankIndex) * SQUARE_SIZE//(orientation === 'w' ? 7 - rankIndex : rankIndex) * SQUARE_SIZE
         
         const cls = ["square", dark ? 'dark' : 'light']
-        // piece && cls.push(piece.type)
         // @ts-ignore
         const fillColor = DEFAULT_COLORS[cls.join(' ')] as string
         svg.ele("rect", {
