@@ -1,9 +1,11 @@
-import { Chess } from "chess.js";
-import { Guild, Message, User } from "discord.js";
+import { SvgRenderer } from "../board/svg";
 import { prefix } from "../config";
 import type { ExtraData, Game } from "../types";
 import { BaseHandler } from "./base";
 
+import { Chess } from "chess.js";
+import { Guild, Message, MessageAttachment } from "discord.js";
+import svg2img from 'svg2img'
 export class MoveHandler extends BaseHandler {
   _name = "move handler"
   async onMessage(message: Message, { normalized, mentions }: ExtraData) {
@@ -52,13 +54,20 @@ Run \`${prefix}challenge @user\` to create one`)
         ...game,
         fen
       }, (message.guild as Guild).id)    
-
-      await message.channel.send(`Here's the board:
-\`\`\`
-${chess.ascii().replace('    ', ' ')}
-\`\`\`
-`)
-
+      const renderer = new SvgRenderer()
+      const rendered = renderer.board(fen, 400)
+      console.log(rendered)
+      const file: Buffer = await new Promise((resolve, reject) => {
+        svg2img(rendered, {
+          width: 400,
+          height: 400
+        }, (err, buf) => {
+          if(err) return reject(err)
+          resolve(buf)
+        })
+      })
+      const attachment = new MessageAttachment(file, 'board.jpg')
+      await message.channel.send(`Here's the board`, attachment)
       return true
     } else {
       return false
