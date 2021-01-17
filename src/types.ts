@@ -7,6 +7,8 @@ export interface Game {
   turn: 'w' | 'b';
   id: string;
   lastMessage: string;
+  moves: string[];
+  opening?: string;
 }
 
 export interface ExtraData {

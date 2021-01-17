@@ -1,6 +1,7 @@
 import {Guild, Message, User} from 'discord.js'
 import {nanoid} from 'nanoid'
 import {prefix} from '../config'
+import {STARTING_FEN} from '../constants'
 import type {ExtraData, Game} from '../types'
 import {BaseHandler} from './base'
 
@@ -22,12 +23,13 @@ export class ChallengeHandler extends BaseHandler {
       }
 
       const game: Game = {
-        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        fen: STARTING_FEN,
         white: challenger.id,
         black: challengee.id,
         turn: 'w',
         id: nanoid(32),
-        lastMessage: ''
+        lastMessage: '',
+        moves: []
       }
 
       this.store.newGame(game, {
@@ -35,7 +37,7 @@ export class ChallengeHandler extends BaseHandler {
         user: challenger
       })
 
-      await message.channel.send('Game successfully created! You can move with `chess move <move>`')
+      await message.channel.send('Game successfully created! You can move with `move <move>`')
 
       return true
     }

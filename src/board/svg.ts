@@ -1,10 +1,10 @@
-import {Chess} from 'chess.js'
+import {Chess, Move, Square} from 'chess.js'
 
 import {
   create, fragment
 } from 'xmlbuilder2'
 import {XMLBuilder} from 'xmlbuilder2/lib/interfaces'
-import {shortColorToLong, shortTypeToLong} from '../utils'
+import {algebraic, shortColorToLong, shortTypeToLong} from '../utils'
 
 const SQUARE_SIZE = 45
 const MARGIN = 20
@@ -75,10 +75,12 @@ export class SvgRenderer {
     return svg
   }
 
-  board(fen: string, {size = 400, orientation = 'w'}: {
+  board(fen: string, {size = 400, orientation = 'w', lastMove}: {
     size?: number;
     orientation?: 'b' | 'w';
+    lastMove?: Move;
   }): string {
+    console.log(lastMove)
     const chess = Chess(fen)
     const board = chess.board()
     const svg = this.svg(0, size)
@@ -95,13 +97,25 @@ export class SvgRenderer {
       }
     }
 
-    let dark = false
+    let dark = orientation !== 'w'
+    const moves: Square[] = []
     board.forEach((row, rankIndex) => {
       row.forEach((piece, fileIndex) => {
         const x = (orientation === 'w' ? fileIndex : 7 - fileIndex) * SQUARE_SIZE
-        const y = (orientation === 'w' ? rankIndex : 7 - rankIndex) * SQUARE_SIZE// (orientation === 'w' ? 7 - rankIndex : rankIndex) * SQUARE_SIZE
+        const y = (orientation === 'w' ? rankIndex : 7 - rankIndex) * SQUARE_SIZE
 
         const cls = ['square', dark ? 'dark' : 'light']
+        const square = algebraic(rankIndex, fileIndex)
+        moves.push(square)
+        // Console.log({
+        //   square,
+        //   last: lastMove
+        // })
+        if (lastMove && [lastMove.from, lastMove.to].includes(square)) {
+          console.log('Last move!!')
+          cls.push('lastmove')
+        }
+
         // @ts-expect-error
         const fillColor = DEFAULT_COLORS[cls.join(' ')] as string
         svg.ele('rect', {
@@ -124,6 +138,7 @@ export class SvgRenderer {
 
         dark = !dark
       })
+      console.log(moves)
       dark = !dark
     })
 

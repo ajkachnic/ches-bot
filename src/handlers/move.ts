@@ -1,22 +1,27 @@
 import {SvgRenderer} from '../board/svg'
 import {prefix} from '../config'
-import type {ExtraData, Game} from '../types'
+import type {ExtraData} from '../types'
 import {BaseHandler} from './base'
-
-import {Chess, ChessInstance} from 'chess.js'
-import {Guild, Message, MessageAttachment, Client} from 'discord.js'
-import svg2img from 'svg2img'
+import {analyzeGame} from '../analyze'
 import {GameInfo} from '../store/base'
+
+import {Chess, ChessInstance, Move} from 'chess.js'
+import {Message, MessageAttachment, MessageEmbed} from 'discord.js'
+import svg2img from 'svg2img'
 
 export class MoveHandler extends BaseHandler {
   _name = 'move handler'
 
-  async createImage(chess: ChessInstance) {
+  async createImage(chess: ChessInstance, move: Move) {
     const fen = chess.fen()
+    const history = chess.history({
+      verbose: true
+    })
     const renderer = new SvgRenderer()
     const rendered = renderer.board(fen, {
       size: 400,
-      orientation: chess.turn()
+      orientation: chess.turn(),
+      lastMove: move
     })
     const file: Buffer = await new Promise((resolve, reject) => {
       svg2img(rendered, {
@@ -81,21 +86,21 @@ Run \`${prefix}challenge @user\` to create one`)
       }
 
       if (chess.in_stalemate()) {
-        const attachment = await this.createImage(chess)
+        const attachment = await this.createImage(chess, legal)
         await channel.send('The game is in stalemate. In a sense, you\'re both losers. Here\'s the final board', attachment)
         this.endGame(info)
         return true
       }
 
       if (chess.in_checkmate()) {
-        const attachment = await this.createImage(chess)
+        const attachment = await this.createImage(chess, legal)
         await channel.send(`Checkmate. Congrats <@${author.id}>. Here's the final board`, attachment)
         this.endGame(info)
         return true
       }
 
       if (chess.in_draw()) {
-        const attachment = await this.createImage(chess)
+        const attachment = await this.createImage(chess, legal)
         await channel.send('The game is a draw. In a sense, you both lost. Here\'s the board', attachment)
         this.endGame(info)
         return true
@@ -105,7 +110,12 @@ Run \`${prefix}challenge @user\` to create one`)
       game = this.store.updateGame({
         ...game,
         fen,
-        turn: chess.turn()
+        turn: chess.turn(),
+        moves: chess.history({
+          verbose: true
+        }).map(move => {
+          return move.from + move.san
+        })
       }, (message.guild!).id)
 
       try {
@@ -118,11 +128,25 @@ Run \`${prefix}challenge @user\` to create one`)
         await (await channel.messages.fetch(game.lastMessage)).delete()
       }
 
-      const attachment = await this.createImage(chess)
-      const message_ = await channel.send('Here\'s the board', attachment)
+      const attachment = await this.createImage(chess, legal)
+
+      const next = chess.turn() === 'b' ? game.black : game.white
+
+      const analysis = await analyzeGame(game.fen)
+      const embed = new MessageEmbed()
+        .setTitle('Move successful')
+        .setDescription(`It's your move, <@${next}>. ${chess.in_check() ? 'You appear to be in check, so move carefully. ' : ''}`)
+        .attachFiles([attachment])
+        .setImage('attachment://board.jpg')
+      if (analysis) {
+        embed.addField('Opening', analysis.name)
+      }
+
+      const message_ = await channel.send({embed})
       this.store.updateGame({
         ...game,
-        lastMessage: message_.id
+        lastMessage: message_.id,
+        opening: analysis ? analysis.name : game.opening
       }, (message.guild!).id)
 
       return true
