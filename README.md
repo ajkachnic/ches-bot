@@ -17,6 +17,7 @@
 - [ ] Maybe abstract board rendering logic to an npm module
 - [ ] Add some performance benchmarks to make sure it stays fast
 - [ ] Maybe unit tests?
+- [ ] Add time control options (probably not though)
 
 ## Setup
 
