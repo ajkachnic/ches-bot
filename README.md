@@ -1,8 +1,26 @@
 # chess-bot
 
+## Todos
+
+- [ ] Fix bug where you can join multiple games at one
+- [ ] Fix bug where you can play against yourself (maybe)
+- [ ] Ping players to notify them of their move
+- [ ] Add more board rendering options
+- [ ] Add rank and file to the board
+- [ ] Allow playing in DMs (less channel spam too)
+- [ ] Add support to somehow play chess bots
+- [ ] Add database instead of in memory (should be pretty easy due to the modular implementation)
+- [ ] Add a config file for setting some general options
+- [ ] Add more analysis stuff (like advantage bars)
+- [ ] Improve the documentation
+- [ ] Refactor some ugly code
+- [ ] Maybe abstract board rendering logic to an npm module
+- [ ] Add some performance benchmarks to make sure it stays fast
+- [ ] Maybe unit tests?
+
 ## Setup
 
-As a prerequesists, you must have `node` installed. Also you'll need pnpm; Install it like this
+As a prerequisites, you must have `node` installed. Also you'll need pnpm; Install it like this
 
 ```sh
 npm i -g pnpm
